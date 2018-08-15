@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Nerdy Icicles</title>
+  <style type="text/css">
+    table {
+      border-collapse: collapse;
+    }
+    td, th {
+      border: 1px solid black;
+    }
+    td ul {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Monitors</h1>
+<table>
+  {{ range $index, $value := .Monitors }}
+  <tr>
+    <td>{{ $value.DeviceName }}</td>
+    <td>{{ $value.Address }}</td>
+    <td>{{ $value.Netmask }}</td>
+    <td>{{ $value.Mac }}</td>
+    <td>{{ $value.GatewayIP }}</td>
+    <td>
+      <form method="post">
+        <input type="hidden" name="action" value="stop-monitor">
+        <input type="hidden" name="idx" value="{{ $index }}">
+        <button>Stop</button>
+      </form>
+    </td>
+  </tr>
+  {{ end }}
+</table>
+
+<h1>Network Interfaces</h1>
+<table>
+  <tr>
+    <th>Device</th>
+    <th>MAC</th>
+    <th>IP</th>
+    <th>Netmask</th>
+    <th>Broadcast</th>
+    <th>P2P</th>
+    <th></th>
+  </tr>
+{{ range .LocalDevices }}
+  {{ $device := . }}
+  {{ range .Addresses }}
+  <tr>
+    <td>{{ $device.Name }}</td>
+    <td>{{ $device.Mac }}</td>
+    <td>{{ .IP }}</td>
+    <td>{{ .Netmask }}</td>
+    <td>{{ .Broadaddr }}</td>
+    <td>{{ .P2P }}</td>
+    <td>
+      <form method="post">
+        <input type="hidden" name="action" value="start-monitor">
+        <input type="hidden" name="ip" value="{{ .IP }}">
+        <input type="hidden" name="netmask" value="{{ .Netmask }}">
+        <input type="hidden" name="mac" value="{{ $device.Mac }}">
+        <input type="hidden" name="devicename" value="{{ $device.Name }}">
+        <button>Monitor</button>
+      </form>
+    </td>
+  </tr>
+  {{ end }}
+{{ end }}
+</table>
+
+</body>
+</html>
